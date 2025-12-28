@@ -20,20 +20,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-public String login(@RequestBody LoginRequest request) {
-
-    System.out.println("LOGIN ATTEMPT: " + request.getEmail() + " | " + request.getPassword());
+public User login(@RequestBody LoginRequest request) {
 
     Optional<User> user = userRepository.findByEmail(request.getEmail());
 
     if (user.isEmpty()) {
-        return "User not found";
+        throw new RuntimeException("User not found");
     }
 
     if (!user.get().getPassword().equals(request.getPassword())) {
-        return "Invalid password";
+        throw new RuntimeException("Invalid password");
     }
 
-    return "Login successful | Role: " + user.get().getRole();
+    return user.get(); // return full user object
 }
+
 }
